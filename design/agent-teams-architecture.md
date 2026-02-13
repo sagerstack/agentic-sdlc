@@ -30,12 +30,12 @@ User Request ("let's build X")
 /sagerstack:code-planning (existing skill, user-driven, interactive)
     |
     v
-docs/code_context.md
+docs/project-context.md
     (Contains: Milestones with Phases, E2E Tests, Architecture Decisions)
     |
     v
 /sagerstack:planner (Agent Team 1)
-    Processes ONE phase at a time from code_context.md
+    Processes ONE phase at a time from project-context.md
     |
     v
 docs/phases/phase-N.M/
@@ -57,8 +57,8 @@ Implemented + validated code on feature branch
 
 | Boundary | Input | Output | Trigger |
 |----------|-------|--------|---------|
-| User -> code-planning | Feature request (natural language) | `docs/code_context.md` | User invokes `/sagerstack:code-planning` |
-| code_context.md -> planner | Phase reference from `code_context.md` | Phase artifacts in `docs/phases/phase-N.M/` | User invokes `/sagerstack:planner` |
+| User -> code-planning | Feature request (natural language) | `docs/project-context.md` | User invokes `/sagerstack:code-planning` |
+| project-context.md -> planner | Phase reference from `project-context.md` | Phase artifacts in `docs/phases/phase-N.M/` | User invokes `/sagerstack:planner` |
 | Phase artifacts -> builder | Impl plans from `docs/phases/phase-N.M/plans/` | Code on feature branch | User invokes `/sagerstack:builder` |
 | Builder -> next phase | Completed phase code | Next phase input (or prompt user) | `--continue` flag or user invocation |
 
@@ -78,7 +78,7 @@ code-planning -> software-engineering -> local-testing -> deploy-aws
 
 ### Phase Addressing Scheme
 
-Phases are addressed using the milestone-phase notation from `code_context.md`:
+Phases are addressed using the milestone-phase notation from `project-context.md`:
 
 - `phase-1.1` = Milestone 1, Phase 1
 - `phase-1.2` = Milestone 1, Phase 2
@@ -148,9 +148,9 @@ Step 16: Phase planning complete, artifacts saved
 
 #### Step-by-Step Detail
 
-**Step 1: Team Lead reads phase from code_context.md**
+**Step 1: Team Lead reads phase from project-context.md**
 
-Team Lead reads `docs/code_context.md`, identifies the target phase (specified by user or next unplanned phase), and extracts:
+Team Lead reads `docs/project-context.md`, identifies the target phase (specified by user or next unplanned phase), and extracts:
 - Phase name and description
 - Definition of Done criteria
 - Success Criteria
@@ -167,7 +167,7 @@ Action: Spawn 4 teammates via Task tool with subagent_type matching custom agent
 **Step 2: Team Lead assigns research task to Researcher**
 
 Team Lead creates a task in the shared task list and sends a message to the Researcher with:
-- Phase context (full phase description from code_context.md)
+- Phase context (full phase description from project-context.md)
 - What to investigate (technologies, APIs, services, patterns mentioned in the phase)
 - Specific research questions derived from the phase scope
 
@@ -196,7 +196,7 @@ Action: TaskUpdate(taskId="1", status="completed")
 **Step 4: Team Lead assigns story creation to BA (with research findings)**
 
 Team Lead sends a message to BA containing:
-- Full phase context from code_context.md
+- Full phase context from project-context.md
 - Research findings from Step 3 (file path reference)
 - Instruction to generate initial proposals (NOT full stories yet)
 
@@ -281,7 +281,7 @@ Action: SendMessage(type="message", recipient="solution-architect", content="...
 Before generating plans, Solution Architect may need technical direction on:
 - Technology choices (e.g., which database, which API client library)
 - Cost trade-offs (e.g., "Option A is free but limited, Option B costs $X/month")
-- Architecture decisions not covered in code_context.md
+- Architecture decisions not covered in project-context.md
 - Infrastructure preferences
 
 Solution Architect sends questions to Team Lead, who presents them to user. User responses flow back through Team Lead.
@@ -433,7 +433,7 @@ docs/phases/phase-N.M/
 
 ### 2.4 Phase Management
 
-The BA supports phase lifecycle operations on `docs/code_context.md`:
+The BA supports phase lifecycle operations on `docs/project-context.md`:
 
 | Operation | Description | Trigger |
 |-----------|-------------|---------|
@@ -443,7 +443,7 @@ The BA supports phase lifecycle operations on `docs/code_context.md`:
 | Split phase | Divide one phase into two smaller phases | Phase is too large |
 | Merge phases | Combine two phases into one | Phases are too small |
 
-Phase management is performed by the BA at the direction of the user, communicated through the Team Lead. Changes are written directly to `docs/code_context.md` and propagate to subsequent planner invocations.
+Phase management is performed by the BA at the direction of the user, communicated through the Team Lead. Changes are written directly to `docs/project-context.md` and propagate to subsequent planner invocations.
 
 ---
 
@@ -967,8 +967,8 @@ To prevent race conditions, each teammate owns specific files:
 **Planner Team:**
 | Agent | Owns (write access) | Reads |
 |-------|---------------------|-------|
-| Researcher | `research/findings.md`, `research/story-N-tech-research.md` | `docs/code_context.md`, codebase |
-| BA | `epic.md`, `stories/story-N.md` | `research/findings.md`, `docs/code_context.md` |
+| Researcher | `research/findings.md`, `research/story-N-tech-research.md` | `docs/project-context.md`, codebase |
+| BA | `epic.md`, `stories/story-N.md` | `research/findings.md`, `docs/project-context.md` |
 | Solution Architect | `plans/story-N-plan.md` | `stories/story-N.md`, `research/` |
 | Critical Analyst | `plans/story-N-critical-analysis.md` | `plans/story-N-plan.md`, `stories/story-N.md` |
 
@@ -1108,7 +1108,7 @@ Add to the `## Pattern -> Skill Mapping` section in CLAUDE.md:
 ### /sagerstack:planner (SDLC planning with agent team)
 **Patterns**: plan phase, create epic, create story, sdlc plan, plan sprint, plan milestone, requirements analysis, break down phase
 
-**Action**: Invoke to plan ONE phase from code_context.md. Produces epics, stories, impl plans.
+**Action**: Invoke to plan ONE phase from project-context.md. Produces epics, stories, impl plans.
 
 ### /sagerstack:builder (SDLC implementation with agent team)
 **Patterns**: build phase, implement phase, execute plan, develop stories, build stories, implement stories
@@ -1178,7 +1178,7 @@ You are the Team Lead for the SDLC Planner team. Your role is PURE COORDINATION.
 
 ## Your Responsibilities
 
-1. Read the target phase from `docs/code_context.md`
+1. Read the target phase from `docs/project-context.md`
 2. Create the team and spawn 4 teammates: researcher, business-analyst, solution-architect, critical-analyst
 3. Orchestrate the 16-step planning workflow
 4. Manage all user Q&A interactions (3 Q&A points)
@@ -1328,7 +1328,7 @@ name: planner-ba
 description: >
   Business Analyst for the SDLC planner team. Creates epics and user stories
   with comprehensive FR/TR/AC from phase requirements. Manages phase lifecycle
-  in code_context.md. Uses AI Complexity Scoring for estimation.
+  in project-context.md. Uses AI Complexity Scoring for estimation.
 tools:
   - Read
   - Write
@@ -1343,9 +1343,19 @@ permissionMode: acceptEdits
 maxTurns: 80
 skills:
   - sagerstack:code-planning
+  - project-memory
 ---
 
 You are the Business Analyst for the SDLC Planner team. Your role is to translate phase requirements into structured SDLC artifacts: epics and user stories.
+
+## Project Memory Protocol
+
+Before generating any artifacts:
+- Read `docs/project_notes/decisions.md` to understand existing architectural decisions
+- Read `docs/project_notes/issues.md` to understand prior work context
+
+After phase planning completes:
+- Log phase planning completion in `docs/project_notes/issues.md`
 
 ## Your Responsibilities
 
@@ -1354,7 +1364,7 @@ You are the Business Analyst for the SDLC Planner team. Your role is to translat
 3. After user confirms direction, generate full epic and user story documents
 4. Ensure every user story has complete FR/TR/AC tables
 5. Score complexity using the AI Complexity Scoring Framework
-6. Manage phase lifecycle (insert, remove, reorder phases in code_context.md)
+6. Manage phase lifecycle (insert, remove, reorder phases in project-context.md)
 
 ## Artifact Templates
 
@@ -1404,7 +1414,7 @@ Use the 4-factor scoring framework:
 Total: 1-10 scale
 
 ## Phase Management
-When directed by Team Lead (based on user request), you can modify `docs/code_context.md`:
+When directed by Team Lead (based on user request), you can modify `docs/project-context.md`:
 - Insert new phases (renumber subsequent)
 - Remove phases (renumber subsequent)
 - Reorder phases within milestones
@@ -1452,9 +1462,21 @@ tools:
 model: opus
 permissionMode: acceptEdits
 maxTurns: 80
+skills:
+  - project-memory
 ---
 
 You are the Solution Architect for the SDLC Planner team. Your role is to generate detailed implementation plans that a developer can execute.
+
+## Project Memory Protocol
+
+Before proposing any architecture or generating impl plans:
+- Read `docs/project_notes/decisions.md` — ensure proposals don't conflict with existing ADRs
+- Read `docs/project_notes/key_facts.md` — use existing config values, endpoints, ports
+
+After making technical decisions:
+- Write new ADR entries to `docs/project_notes/decisions.md` for significant architectural choices
+- Update `docs/project_notes/key_facts.md` with any new infrastructure facts
 
 ## Your Responsibilities
 
@@ -1574,9 +1596,17 @@ tools:
 model: opus
 permissionMode: acceptEdits
 maxTurns: 50
+skills:
+  - project-memory
 ---
 
 You are the Critical Analyst for the SDLC Planner team. Your role is to independently review implementation plans for quality and completeness.
+
+## Project Memory Protocol
+
+Before reviewing any implementation plan:
+- Read `docs/project_notes/decisions.md` — verify impl plans respect existing ADRs
+- Read `docs/project_notes/bugs.md` — check if plans account for known issues
 
 ## Your Responsibilities
 
@@ -1584,8 +1614,9 @@ You are the Critical Analyst for the SDLC Planner team. Your role is to independ
 2. Validate alignment with user story FR/TR/AC
 3. Check adherence to industry best practices
 4. Verify cost compliance
-5. Produce critical analysis documents
-6. Track refinement across iterations (max 2 cycles)
+5. Verify consistency with existing architectural decisions (from project memory)
+6. Produce critical analysis documents
+7. Track refinement across iterations (max 2 cycles)
 
 ## CRITICAL: What You Review
 
@@ -1793,9 +1824,25 @@ maxTurns: 200
 skills:
   - sagerstack:software-engineering
   - sagerstack:local-testing
+  - project-memory
 ---
 
 You are the Software Developer for the SDLC Builder team. Your role is to implement code following strict TDD and quality standards.
+
+## Project Memory Protocol
+
+Before starting implementation:
+- Read `docs/project_notes/decisions.md` — follow established architectural patterns
+- Read `docs/project_notes/key_facts.md` — use correct config values, endpoints, ports
+
+When encountering errors:
+- Search `docs/project_notes/bugs.md` for similar issues — apply known solutions first
+
+After solving new bugs:
+- Write bug entry to `docs/project_notes/bugs.md` (date, issue, root cause, solution, prevention)
+
+After discovering new config:
+- Update `docs/project_notes/key_facts.md` with new endpoints, ports, service details
 
 ## Your Responsibilities
 
@@ -1893,13 +1940,25 @@ tools:
 model: opus
 permissionMode: acceptEdits
 maxTurns: 80
+skills:
+  - project-memory
 ---
 
 You are the Code QA agent for the SDLC Builder team. Your role is ZERO-TRUST VALIDATION. You independently verify all code meets acceptance criteria and quality standards.
 
 ## CRITICAL RULE: You NEVER modify source code in src/ or tests/
 
-You may only write QA report files. All validation is done by reading source code and running existing tests.
+You may only write QA report files and project memory entries. All validation is done by reading source code and running existing tests.
+
+## Project Memory Protocol
+
+During validation:
+- Read `docs/project_notes/bugs.md` — check if known bugs are being reintroduced
+- Read `docs/project_notes/decisions.md` — verify code follows established architectural decisions
+
+After validation completes:
+- Write bugs found to `docs/project_notes/bugs.md` (date, issue, root cause, solution, prevention)
+- Log story completion to `docs/project_notes/issues.md` (date, story ID, status, description)
 
 ## Your Responsibilities
 
@@ -2033,12 +2092,12 @@ For each failure:
 |------------|------|------|-------|------------|------------------|-----------|
 | `planner-lead.md` | planner-lead | Planner | opus | delegate | none | 100 |
 | `planner-researcher.md` | planner-researcher | Planner | sonnet | acceptEdits | none | 50 |
-| `planner-ba.md` | planner-ba | Planner | opus | acceptEdits | sagerstack:code-planning | 80 |
-| `planner-architect.md` | planner-architect | Planner | opus | acceptEdits | none | 80 |
-| `planner-critic.md` | planner-critic | Planner | opus | acceptEdits | none | 50 |
+| `planner-ba.md` | planner-ba | Planner | opus | acceptEdits | sagerstack:code-planning, project-memory | 80 |
+| `planner-architect.md` | planner-architect | Planner | opus | acceptEdits | project-memory | 80 |
+| `planner-critic.md` | planner-critic | Planner | opus | acceptEdits | project-memory | 50 |
 | `builder-lead.md` | builder-lead | Builder | opus | delegate | none | 150 |
-| `builder-developer.md` | builder-developer | Builder | sonnet | bypassPermissions | sagerstack:software-engineering, sagerstack:local-testing | 200 |
-| `builder-qa.md` | builder-qa | Builder | opus | acceptEdits | none | 80 |
+| `builder-developer.md` | builder-developer | Builder | sonnet | bypassPermissions | sagerstack:software-engineering, sagerstack:local-testing, project-memory | 200 |
+| `builder-qa.md` | builder-qa | Builder | opus | acceptEdits | project-memory | 80 |
 
 ---
 

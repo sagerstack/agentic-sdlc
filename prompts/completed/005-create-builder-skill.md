@@ -74,7 +74,25 @@ When QA fails:
 - QA re-runs only the previously failing checks (not full suite)
 - This prevents wasted effort on already-passing work
 
-### 6. Configurable Execution Mode
+### 6. Project Memory Integration
+Both builder team members integrate with `/project-memory`:
+
+**Software Developer (READ before coding, WRITE when learning):**
+- Read `docs/project_notes/decisions.md` — follow established architectural patterns
+- Read `docs/project_notes/key_facts.md` — use correct config values, endpoints, ports
+- Read `docs/project_notes/bugs.md` — when encountering errors, check for known solutions first
+- Write bug entries when solving new bugs (date, issue, root cause, solution, prevention)
+- Update `key_facts.md` with newly discovered config values
+
+**Code QA (READ during validation, WRITE after validation):**
+- Read `docs/project_notes/bugs.md` — check for regressions of known bugs
+- Read `docs/project_notes/decisions.md` — verify code follows established patterns
+- Write newly found bugs to `bugs.md`
+- Log story completion to `docs/project_notes/issues.md`
+
+Add `project-memory` to the `skills:` field of both the Developer and Code QA subagent definitions.
+
+### 7. Configurable Execution Mode
 - **Default (single phase)**: Execute one phase, stop after all stories validated
 - **Auto-chain (--continue)**: After phase completes, check if next phase has impl plans ready. If yes, continue. Pause at each QA gate for user approval.
 
@@ -103,7 +121,7 @@ Members:
 ## Workflow Sequence
 
 ### Step 1: Intake
-- Read `docs/code_context.md` to identify the current phase
+- Read `docs/project-context.md` to identify the current phase
 - Read `docs/phases/phase-N.M/` to find available impl plans
 - List user stories with their impl plan status
 - Ask user which phase/story to build (or auto-select next unbuilt)
@@ -166,7 +184,7 @@ git checkout -b feature/phase-N.M-story-N
 ### Step 5: Phase Completion
 - All stories in phase validated and complete
 - Summary report generated
-- Phase status updated in code_context.md (ready → complete)
+- Phase status updated in project-context.md (ready → complete)
 - If --continue flag:
   - Check next phase for ready impl plans
   - If ready → start Step 1 for next phase
@@ -214,10 +232,14 @@ Create workflow files for:
 
 ## References
 
-Create reference files for:
+Create reference files by extracting and adapting content from old artifacts:
 - `references/git-workflow.md` — Branch naming, commit conventions, PR creation
-- `references/task-execution.md` — How to read and execute impl plan tasks
+- `references/task-execution.md` — How to read and execute impl plan tasks (extract from `./artifacts/process-implementation-plan.md`)
 - `references/escalation-protocol.md` — When and how to escalate to user
+- `references/developer-log.md` — Developer logging format (extract from `./artifacts/developer-log.md`)
+- `references/ddd-patterns.md` — DDD implementation patterns (extract from `./artifacts/ddd-patterns.md`)
+
+IMPORTANT: These reference files should contain the FULL content adapted for the new workflow, not just placeholders. The artifacts folder will be deleted after skills are created — the skills must be self-contained.
 
 </requirements>
 

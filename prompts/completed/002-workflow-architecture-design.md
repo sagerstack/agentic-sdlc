@@ -9,7 +9,7 @@ The architecture must define two independent agent teams that form a pipeline:
 
 ```
 /sagerstack:code-planning (existing, user-driven)
-    → docs/code_context.md (Milestones + Phases)
+    → docs/project-context.md (Milestones + Phases)
         → /sagerstack:planner (Team 1: plans one phase at a time)
             → docs/phases/phase-N/ (epic, user stories, impl plans)
                 → /sagerstack:builder (Team 2: executes impl plans)
@@ -44,7 +44,7 @@ Design the /sagerstack:planner agent team with 4 members:
 - subagent_type: general-purpose or Explore (decide which is better)
 
 ### Business Analyst (BA)
-- Reads phase from code_context.md
+- Reads phase from project-context.md
 - Generates proposals for user (multiple options when appropriate)
 - Creates epic document (phase-level) with user stories
 - Each user story has: FR (Functional Requirements), TR (Technical Requirements), AC (Acceptance Criteria)
@@ -68,7 +68,7 @@ Design the /sagerstack:planner agent team with 4 members:
 
 ### Planner Workflow Sequence
 Define the exact step-by-step workflow:
-1. Team Lead reads phase from code_context.md
+1. Team Lead reads phase from project-context.md
 2. Team Lead assigns research task to Researcher
 3. Researcher investigates → returns findings
 4. Team Lead assigns story creation to BA (with research findings)
@@ -97,7 +97,7 @@ The BA should support phase operations:
 - Insert new phase
 - Remove existing phase
 - Reorder phases
-Define how these operations modify code_context.md.
+Define how these operations modify project-context.md.
 
 ## 2. Builder Team Architecture
 

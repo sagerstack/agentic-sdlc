@@ -137,9 +137,9 @@ Agents are spawned via the `Task` tool (not listed in the function catalog above
 
 ### 3.1 `/sagerstack:code-planning`
 
-**Purpose**: Mandatory planning workflow before any code. Produces `docs/code_context.md`.
+**Purpose**: Mandatory planning workflow before any code. Produces `docs/project-context.md`.
 
-**Workflow**: Question-driven discovery -> Preference lookup -> Iterative milestone/phase proposal -> E2E test definition -> Generate code_context.md
+**Workflow**: Question-driven discovery -> Preference lookup -> Iterative milestone/phase proposal -> E2E test definition -> Generate project-context.md
 
 **Key Outputs**:
 - Milestones (week-sized deliverables) containing Phases (1-2 day concrete steps)
@@ -147,12 +147,12 @@ Agents are spawned via the `Task` tool (not listed in the function catalog above
 - Architecture decisions and technical choices
 
 **Integration with Planner Skill**:
-- The planner skill operates at a DIFFERENT level of abstraction. Code-planning produces `docs/code_context.md` with milestones/phases. The planner skill produces SDLC artifacts (MVP, Epic, User Story, Tech Research, Implementation Plan, Critical Analysis).
+- The planner skill operates at a DIFFERENT level of abstraction. Code-planning produces `docs/project-context.md` with milestones/phases. The planner skill produces SDLC artifacts (MVP, Epic, User Story, Tech Research, Implementation Plan, Critical Analysis).
 - **Non-overlapping**: code-planning is for when a user says "let's build X" and needs milestone/phase breakdown. The planner skill is for when SDLC artifacts need to be generated from requirements.
 - **Potential conflict**: Both could be triggered by "new feature" or "let's build". The CLAUDE.md routing table should disambiguate: code-planning for direct-to-code planning, planner for full SDLC artifact generation.
 
 **Handoff points**:
-- code-planning's `docs/code_context.md` could serve as INPUT to the planner skill (providing milestones/phases as context for epic/story breakdown)
+- code-planning's `docs/project-context.md` could serve as INPUT to the planner skill (providing milestones/phases as context for epic/story breakdown)
 - OR planner skill could REPLACE code-planning for projects using the full SDLC flow
 
 ### 3.2 `/sagerstack:software-engineering`

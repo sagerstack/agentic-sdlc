@@ -6,12 +6,12 @@ Extract valuable specifications from the old agent-teams design artifacts and sy
 This project is redesigning an AI-powered SDLC framework. The old design used a custom three-agent architecture (orchestrator, py-developer, code-qa). The new design leverages Claude Code's native capabilities: TeamCreate, Task tool with subagent_type, SendMessage, parallel task execution, and shared task lists.
 
 The old design artifacts are in `./artifacts/` (21 files). Three existing Claude Code skills will integrate with the new workflow:
-- `/sagerstack:code-planning` — Produces `docs/code_context.md` with Milestones and Phases
+- `/sagerstack:code-planning` — Produces `docs/project-context.md` with Milestones and Phases
 - `/sagerstack:software-engineering` — Python architecture (Vertical Slice + DDD, TDD, 90% coverage, CamelCase)
 - `/sagerstack:local-testing` — Docker-first local execution, pytest fixtures, deployment scripts
 
 Two new skills will be created:
-1. `/sagerstack:planner` — Agent team (BA, Researcher, Solution Architect, Critical Analyst) that takes phases from code_context.md and produces epics, user stories, and implementation plans
+1. `/sagerstack:planner` — Agent team (BA, Researcher, Solution Architect, Critical Analyst) that takes phases from project-context.md and produces epics, user stories, and implementation plans
 2. `/sagerstack:builder` — Agent team (Software Developer, Code QA) that executes implementation plans and validates against acceptance criteria + UAT
 </context>
 
@@ -55,7 +55,7 @@ Document the capabilities and constraints that affect workflow design.
 Read these three skill files and identify integration points:
 
 1. `/Users/sagarpratapsingh/.claude/skills/sagerstack-code-planning/SKILL.md`
-   - What does code_context.md contain? (milestones, phases, E2E tests)
+   - What does project-context.md contain? (milestones, phases, E2E tests)
    - What format are phases in? (fields: Delivers, Definition of Done, Success Criteria)
    - Where does code-planning END and planner should BEGIN?
 

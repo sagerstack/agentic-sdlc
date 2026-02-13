@@ -86,14 +86,27 @@ UAT scenarios are derived from acceptance criteria:
 - Capture evidence: HTTP response, status code, response body
 - Compare against expected outcome from AC
 
-### 5. Granular Failure Mapping
+### 5. Project Memory Integration
+The Code QA skill integrates with `/project-memory` to build institutional knowledge:
+
+**During validation (READ):**
+- Read `docs/project_notes/bugs.md` — check if known bugs are being reintroduced
+- Read `docs/project_notes/decisions.md` — verify code follows established architectural decisions
+
+**After validation (WRITE):**
+- Write newly discovered bugs to `docs/project_notes/bugs.md` (date, issue, root cause, solution, prevention)
+- Log story completion to `docs/project_notes/issues.md` (date, story ID, status, description)
+
+This creates a compound learning effect: each QA cycle contributes to project memory, making future cycles faster and more thorough.
+
+### 6. Granular Failure Mapping
 When validation fails:
 - Map each failure to the specific implementation plan task that produced it
 - Provide specific remediation guidance (what to fix, where)
 - Categorize: test failure, coverage gap, code quality violation, UAT failure
 - This enables targeted remediation (Developer fixes specific tasks, not everything)
 
-### 6. QA Report Generation
+### 7. QA Report Generation
 Output a structured report at `docs/phases/phase-N.M/qa/story-N-qa-report.md`:
 
 ```markdown
@@ -183,10 +196,13 @@ After developer fixes:
 
 ## References
 
-Create reference files for:
-- `references/ac-parsing.md` — How to parse acceptance criteria from user story format
+Create reference files by extracting and adapting content from old artifacts and existing skills:
+- `references/ac-parsing.md` — How to parse acceptance criteria from user story format (extract from `./artifacts/user-story-artifact.md`)
 - `references/uat-patterns.md` — Common UAT scenario patterns (CRUD, auth, error handling)
-- `references/quality-checklist.md` — Complete quality check reference
+- `references/quality-checklist.md` — Complete quality check reference (extract from `./artifacts/quality-checks.md` and `./artifacts/code-quality-standards.md`)
+- `references/cross-agent-validation.md` — Validation methodology (extract from `./artifacts/cross-agent-validation.md`)
+
+IMPORTANT: These reference files should contain the FULL content adapted for the new workflow, not just placeholders. The artifacts folder will be deleted after skills are created — the skills must be self-contained.
 
 </requirements>
 

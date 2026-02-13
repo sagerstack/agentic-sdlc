@@ -7,7 +7,7 @@ Read these files first:
 - `./design/agent-teams-architecture.md` — Full workflow architecture (Section 1: Planner Team)
 - `./research/agent-teams-synthesis.md` — Extracted specs and artifact templates from old design
 
-This skill is invoked directly by the user via `/sagerstack:planner`. It receives its input from `docs/code_context.md` (produced by `/sagerstack:code-planning`), which contains Milestones and Phases.
+This skill is invoked directly by the user via `/sagerstack:planner`. It receives its input from `docs/project-context.md` (produced by `/sagerstack:code-planning`), which contains Milestones and Phases.
 
 The skill spawns a Claude Code agent team using TeamCreate with 4 members:
 1. **Researcher** — Investigates phase requirements
@@ -16,7 +16,7 @@ The skill spawns a Claude Code agent team using TeamCreate with 4 members:
 4. **Critical Analyst** — Reviews implementation plans against user stories + best practices
 
 Existing skills referenced:
-- `/sagerstack:code-planning` produces `docs/code_context.md` (milestones + phases with: Delivers, Definition of Done, Success Criteria)
+- `/sagerstack:code-planning` produces `docs/project-context.md` (milestones + phases with: Delivers, Definition of Done, Success Criteria)
 - `/sagerstack:software-engineering` defines architecture patterns the Solution Architect should align with
 - `/sagerstack:local-testing` defines infrastructure patterns the Solution Architect should consider
 
@@ -39,7 +39,7 @@ Follow the exact SKILL.md structure of existing sagerstack skills.
 ## Essential Principles
 
 ### 1. Phase-at-a-Time Processing
-- Read `docs/code_context.md` to identify available phases
+- Read `docs/project-context.md` to identify available phases
 - Present phase list to user, let them select which to plan
 - Process ONE phase completely before offering the next
 - Each phase produces a complete artifact set (epic, stories, impl plans)
@@ -69,8 +69,28 @@ Critical Analyst reviews AFTER Solution Architect generates impl plans:
 - (c) Are there better alternatives the Solution Architect missed?
 - If issues found → Solution Architect revises (max 2 revision cycles)
 
-### 6. Phase Management
-BA supports these operations on `docs/code_context.md`:
+### 6. Project Memory Integration
+All planner team members integrate with `/project-memory` to build institutional knowledge:
+
+**Solution Architect (READ before proposing, WRITE after deciding):**
+- Read `docs/project_notes/decisions.md` — ensure proposals don't conflict with existing ADRs
+- Read `docs/project_notes/key_facts.md` — use existing config values, endpoints, ports
+- Write new ADR entries when making significant architectural choices
+- Update `key_facts.md` with new infrastructure facts
+
+**Critical Analyst (READ before reviewing):**
+- Read `docs/project_notes/decisions.md` — verify impl plans respect existing ADRs
+- Read `docs/project_notes/bugs.md` — check if plans account for known issues
+
+**BA (READ for context, WRITE for tracking):**
+- Read `docs/project_notes/decisions.md` — understand existing architectural context
+- Read `docs/project_notes/issues.md` — understand prior work context
+- Log phase planning completion in `docs/project_notes/issues.md`
+
+Add `project-memory` to the `skills:` field of the BA, Solution Architect, and Critical Analyst subagent definitions.
+
+### 7. Phase Management
+BA supports these operations on `docs/project-context.md`:
 - **Insert phase**: Add a new phase between existing ones (renumber as needed)
 - **Remove phase**: Delete a phase and renumber
 - **Reorder phases**: Change phase sequence with dependency check
@@ -104,7 +124,7 @@ Members:
 ## Workflow Sequence
 
 ### Step 1: Intake
-- Read `docs/code_context.md`
+- Read `docs/project-context.md`
 - List all phases with their status (planned, in-progress, complete)
 - Ask user which phase to plan (or offer next unplanned phase)
 
@@ -114,7 +134,7 @@ Members:
 
 ### Step 3: Research
 - Assign Researcher to investigate the phase
-- Researcher reads: phase description from code_context.md, existing codebase, external resources
+- Researcher reads: phase description from project-context.md, existing codebase, external resources
 - Researcher produces: `docs/phases/phase-N.M/research/findings.md`
 
 ### Step 4: Proposal Generation
@@ -151,7 +171,7 @@ Members:
 
 ### Step 9: Completion
 - All artifacts saved
-- Phase status updated in code_context.md (planned → ready)
+- Phase status updated in project-context.md (planned → ready)
 - Summary presented to user
 - Team shutdown
 
@@ -186,7 +206,7 @@ Status: planning | ready | in-progress | complete
 - [What this phase enables]
 
 ## Success Criteria
-[From code_context.md phase definition]
+[From project-context.md phase definition]
 ```
 
 ### User Story (docs/phases/phase-N.M/stories/story-N.md)
@@ -268,10 +288,16 @@ Create workflow files for:
 
 ## References
 
-Create reference files for:
-- `references/story-patterns.md` — User story writing patterns and anti-patterns
-- `references/impl-plan-patterns.md` — Implementation plan best practices
+Create reference files by extracting and adapting content from the old artifacts in `./artifacts/`:
+- `references/story-patterns.md` — User story writing patterns and anti-patterns (extract from `./artifacts/user-story-artifact.md`)
+- `references/impl-plan-patterns.md` — Implementation plan best practices (extract from `./artifacts/implementation-plan.md`)
 - `references/cost-assessment.md` — How to evaluate and flag costs
+- `references/epic-template.md` — Epic artifact structure (extract from `./artifacts/epic-artifact.md`)
+- `references/critical-analysis.md` — Critical analysis methodology (extract from `./artifacts/critical-analysis.md`)
+- `references/complexity-scoring.md` — AI complexity scoring framework (extract from `./artifacts/ai-complexity-scoring-framework.md`)
+- `references/quality-standards.md` — Code quality standards and data policies (extract from `./artifacts/code-quality-standards.md`)
+
+IMPORTANT: These reference files should contain the FULL content adapted for the new workflow, not just placeholders. The artifacts folder will be deleted after skills are created — the skills must be self-contained.
 
 </requirements>
 
@@ -314,7 +340,7 @@ Before completing, verify:
 - [ ] Cost flagging is explicit in Solution Architect's workflow
 - [ ] Phase management operations defined (insert, remove, reorder)
 - [ ] All artifact templates match the formats specified above
-- [ ] Input reads from code_context.md (code-planning output)
+- [ ] Input reads from project-context.md (code-planning output)
 - [ ] Output artifacts at docs/phases/phase-N.M/ structure
 - [ ] Workflow and reference placeholder files created
 </verification>
