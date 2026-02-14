@@ -1,6 +1,16 @@
 # Planning Question Bank
 
-Comprehensive questions for the planning workflow. Organized by category.
+Sequential questions for the planning workflow. Ask ONE at a time with multiple-choice options.
+
+## How to Use
+
+1. Ask questions in the order listed below
+2. Each question has suggested options — present as multiple choice
+3. The last option is always free text ("Other: describe in your own words")
+4. Before asking, check persona files and skills for existing preferences
+5. If a preference exists, present as suggested answer for confirmation
+6. Adapt follow-ups based on previous answers
+7. Stop when you have enough context to synthesize an Objective
 
 ## Category Mapping
 
@@ -9,125 +19,119 @@ Comprehensive questions for the planning workflow. Organized by category.
 | Values/Quality | persona/values.md | - |
 | Constraints | persona/constitution.md | - |
 | Architecture | - | software-engineering |
-| Testing | - | build-test-execute |
+| Testing | - | local-testing |
 | Deployment | - | deploy-aws |
 
 ---
 
-## Objective (Project-Specific)
+## Core Questions
 
-### What is the project type?
-- Purpose: Understand the nature of what we're building
-- Examples: CLI tool, web API, scheduled job, library
+### 1. Project Type
+**Question**: What are we building?
+**Options**:
+- CLI tool
+- Web API (REST/GraphQL)
+- Scheduled job / background worker
+- Library / package
+- Other (describe)
 
-### Who is the end user?
-- Purpose: Understand who benefits from this
-- Examples: Internal team, external customers, other developers
+**Check**: No existing preference — always ask
 
-### What problem does this solve?
-- Purpose: Understand the "why" behind the project
-- Follow-up: What happens if we don't build this?
+### 2. Problem
+**Question**: What problem does this solve?
+**Options**: None — this is qualitative, free-form input
+**Follow-up**: What happens if we don't build this?
 
-### What is the deployment target?
-- Purpose: Understand where this will run
-- Examples: Lambda, EKS, local only
+### 3. End User
+**Question**: Who uses this?
+**Options**:
+- Internal team
+- External customers
+- Other developers (library/SDK)
+- Other (describe)
 
----
+### 4. Deployment Target
+**Question**: Where will this run?
+**Options**:
+- Local only (development/testing)
+- AWS Lambda (serverless)
+- AWS EKS (Kubernetes)
+- Other (describe)
 
-## Code Structure
+**Check**: skill:deploy-aws for existing infrastructure patterns
 
-### Project structure pattern?
-- Check: skill:software-engineering (Vertical Slice + DDD)
-- Follow-up: Any deviations needed for this project?
+### 5. Architecture
+**Question**: How should we structure the code?
+**Options**:
+- Vertical Slice + DDD (your default)
+- Layered architecture
+- Other (describe)
 
-### Where should tests go?
-- Check: skill:build-test-execute (tests/ folder)
-- Follow-up: Unit, integration, e2e separation?
+**Check**: skill:software-engineering — Vertical Slice + DDD is the default.
+If preference exists, present as: "Your default is Vertical Slice + DDD. Use this?"
 
----
+### 6. Tech Stack
+**Question**: Key technology choices (language, framework, package manager)
+**Options**: Adapt based on project type:
+- For Python: Poetry + pytest + mypy + ruff (your defaults)
+- For CLI: Typer, Click, argparse
+- For API: FastAPI, Flask
+- Other (describe)
 
-## Domain Modeling
+**Check**: Existing skills for defaults (Python, Poetry, pytest)
 
-### What are the core domain entities?
-- Purpose: Identify the main concepts
-- Follow-up: Relationships between entities?
+### 7. Configuration
+**Question**: What configuration approach do you need?
+**Options**:
+- .env files (local + test)
+- AWS Secrets Manager (production)
+- Both .env + Secrets Manager
+- Other (describe)
 
-### What domain events matter?
-- Purpose: Identify state changes worth tracking
-- Follow-up: Who consumes these events?
+**Check**: persona/values.md — no hardcoded values is a hard constraint
 
----
-
-## Configuration
-
-### What configuration is needed?
-- Check: persona/values.md (no hardcoded values)
-- Follow-up: Which values change between environments?
-
-### What secrets are required?
-- Check: skill:deploy-aws (Secrets Manager for prod)
-- Follow-up: API keys, credentials, tokens?
-
----
-
-## Infrastructure
-
-### What AWS services are needed?
-- Check: skill:deploy-aws
-- Common: Lambda, S3, SNS, SQS, Secrets Manager, EKS
-
-### What external APIs are called?
-- Purpose: Identify external dependencies
-- Follow-up: Rate limits, authentication, error handling?
-
----
-
-## Testing
-
-### What E2E tests must pass locally?
-- Purpose: Define success criteria
-- Follow-up: Happy path + edge cases
-
-### What should be mocked vs real?
-- Check: skill:build-test-execute (mock for unit, LocalStack for integration)
-- Follow-up: Any exceptions?
+### 8. External Dependencies
+**Question**: Does this integrate with external APIs or services?
+**Options**:
+- No external dependencies
+- Yes (describe which services)
+- Not sure yet
 
 ---
 
-## Deployment
+## Adaptive Follow-ups
 
-### What triggers deployment?
-- Check: skill:deploy-aws (GitHub Actions)
-- Follow-up: Manual approval needed?
+These are asked based on previous answers, not automatically.
 
-### What monitoring is needed?
-- Purpose: How will we know it's working?
-- Follow-up: Alerts, dashboards, logs?
+### If Deployment = AWS
+- Which AWS services? (Lambda, S3, SNS, SQS, DynamoDB, etc.)
+- LocalStack for local development?
 
----
+### If External Dependencies = Yes
+- Authentication method? (API key, OAuth, JWT)
+- Rate limits or quotas?
+- Sandbox/test environment available?
 
-## Entry Point
+### If Project Type = Web API
+- What is the entry point? (FastAPI app, Flask app)
+- Database? (PostgreSQL, DynamoDB, SQLite, none)
 
-### What is the application entry point?
-- Purpose: Understand how the code is invoked
-- Examples: Lambda handler, CLI main, API router
-
----
-
-## Custom Questions
-
-_Add project-specific questions discovered during planning sessions._
-
-<!--
-Format:
-
-### [Question text]
-- Purpose: [why we ask this]
-- Check: [persona file or skill, if applicable]
-- Added: [date]
-- Context: [why this question was needed]
--->
+### If Existing Project
+- What patterns does the current codebase use?
+- What should we maintain for consistency?
 
 ---
 
-_This question bank is non-exhaustive. Generate follow-up questions based on responses._
+## Domain Modeling (ask when architecture is confirmed)
+
+### Core Entities
+**Question**: What are the main domain concepts?
+**Follow-up**: How do they relate to each other?
+
+### Domain Events
+**Question**: What state changes are worth tracking?
+**Follow-up**: Who consumes these events?
+
+---
+
+_This question bank is non-exhaustive. Generate follow-up questions based on responses. Always adapt to context._

@@ -1,16 +1,16 @@
-# Phase Patterns
+# Epic & Milestone Patterns
 
-Guidance for structuring implementation phases. Read this during planning to inform phase breakdown.
+Guidance for structuring milestones and epics. Read this during planning to inform the breakdown.
 
 ---
 
 ## Core Philosophy
 
 ### Local-First Development
-The objective for initial phases is to set up minimal foundation to run the app locally. Deliver one capability at a time with complete E2E running successfully on local machine first.
+The objective for initial milestones is to set up minimal foundation to run the app locally. Deliver one capability at a time with complete E2E running successfully on local machine first.
 
 ### Value-Driven Prioritization
-Phases should target core capability and value add FIRST, before bells and whistles (authentication, access control, observability, etc.).
+Epics should target core capability and value add FIRST, before bells and whistles (authentication, access control, observability, etc.).
 
 ### Cloud-Ready from Day One
 Develop with a view of eventual cloud deployment. Local deployment strategy should mimic eventual cloud deployment 100%. This means:
@@ -24,47 +24,54 @@ Plan for AWS deployment only AFTER core capability works locally E2E. Don't depl
 
 ---
 
-## Two-Level Phase Hierarchy
+## OKR-Driven Hierarchy
 
-### Level 1: Milestones
-Larger chunks representing significant deliverables. Typically week-sized.
+### Objective (Project Level)
+The qualitative "what" and "why". Gathered from user during discovery.
+
+### Milestones
+Groupings of related epics toward the Objective. Each milestone has its own Key Results.
 
 ```
 Milestone [N]: [Name]
 - Delivers: [Major capability or outcome]
 - Why Now: [Why this milestone before others]
-- Success Criteria: [How to verify milestone completion]
+
+Key Results:
+- KR-1: [Measurable outcome]
+- KR-2: [Measurable outcome]
 ```
 
-### Level 2: Phases (within Milestones)
-Smaller chunks within milestones. Typically 1-2 day sized.
+### Epics (within Milestones)
+Actionable work units mapped to Key Results. Each epic = one folder under `docs/phases/`.
 
 ```
-Phase [M.N]: [Name]
-- Delivers: [Specific output]
-- Definition of Done:
-  - [Observable outcome 1]
-  - [Observable outcome 2]
-- Success Criteria:
-  - [Verification step 1]
-  - [Verification step 2]
+Epics for Milestone [N]:
+
+| Epic | Task | Key Result |
+|------|------|------------|
+| E1 | [Concise task description] | [KR mapping or — (enabling)] |
+| E2 | [Concise task description] | [KR-1, KR-2] |
 ```
+
+Folder naming: `docs/phases/epic-NNN-three-word-desc/`
+Numbering: Global sequential (epic-001, epic-002, epic-003... across all milestones)
 
 ---
 
-## Phase Ordering Principles
+## Epic Ordering Principles
 
 ### 1. Minimal Runnable First
-First phases should produce something that runs locally, even if minimal.
+First epics should produce something that runs locally, even if minimal.
 
-**Good**: "Phase 1: CLI skeleton that prints hello world"
-**Bad**: "Phase 1: Complete domain model for all entities"
+**Good**: "E1: CLI skeleton that prints hello world"
+**Bad**: "E1: Complete domain model for all entities"
 
 ### 2. Vertical Slices Over Horizontal Layers
-Each phase delivers a complete vertical slice (domain → application → infrastructure → API) for ONE capability, not all layers for all capabilities.
+Each epic delivers a complete vertical slice (domain → application → infrastructure → API) for ONE capability.
 
-**Good**: "Phase 2: Create order flow (domain + repo + handler + endpoint)"
-**Bad**: "Phase 2: All domain models for the entire system"
+**Good**: "E2: Create order flow (domain + repo + handler + endpoint)"
+**Bad**: "E2: All domain models for the entire system"
 
 ### 3. Core Value Before Infrastructure
 Defer non-core requirements until core capability works.
@@ -84,7 +91,7 @@ Defer non-core requirements until core capability works.
 - Local execution
 
 ### 4. One Capability at a Time
-Don't parallelize capabilities in early phases. Complete one E2E before starting next.
+Don't parallelize capabilities in early epics. Complete one E2E before starting next.
 
 ### 5. Cloud Deployment as Separate Milestone
 AWS deployment is its own milestone AFTER local E2E works.
@@ -97,147 +104,147 @@ AWS deployment is its own milestone AFTER local E2E works.
 
 ```
 Milestone 1: Local Foundation
-- Delivers: Minimal app running locally with one core capability E2E
-- Phases:
-  1.1: Project skeleton (structure, dependencies, config)
-  1.2: Domain model for core capability
-  1.3: Repository + in-memory implementation
-  1.4: Application handler
-  1.5: Entry point (CLI/API) + local execution
-  1.6: Docker Compose + LocalStack setup
+Delivers: Minimal app running locally with one core capability E2E
+
+Key Results:
+- KR-1: [Core capability works end-to-end locally]
+- KR-2: [Test coverage >= 90%]
+
+Epics:
+| Epic | Task | Key Result |
+|------|------|------------|
+| E1 | Project Skeleton | — (enabling) |
+| E2 | Core Domain Model | KR-1 |
+| E3 | Repository + Handler | KR-1 |
+| E4 | Entry Point + Local Run | KR-1, KR-2 |
+| E5 | Docker + LocalStack Setup | — (enabling) |
 
 Milestone 2: Core Capability Complete
-- Delivers: Full core capability working locally
-- Phases:
-  2.1-N: Additional vertical slices for core capability
+Delivers: Full core capability working locally
+
+Key Results:
+- KR-1: [All core user journeys work]
+
+Epics:
+| Epic | Task | Key Result |
+|------|------|------------|
+| E6-N | Additional vertical slices | KR-1 |
 
 Milestone 3: Secondary Capabilities
-- Delivers: Supporting features
-- Phases: [Vertical slices for each]
+Delivers: Supporting features
 
 Milestone 4: Production Readiness
-- Delivers: Non-functional requirements
-- Phases:
-  4.1: Authentication/Authorization
-  4.2: Error handling + logging
-  4.3: Configuration management
-  4.4: Health checks
+Delivers: Non-functional requirements (auth, logging, health checks)
 
 Milestone 5: AWS Deployment
-- Delivers: Running in AWS
-- Phases:
-  5.1: Terraform modules
-  5.2: Secrets Manager setup
-  5.3: Lambda/EKS deployment
-  5.4: CI/CD pipeline
+Delivers: Running in AWS
 ```
 
 ### New Feature for Existing Project
 
 ```
 Milestone 1: Feature Foundation
-- Delivers: New capability working locally E2E
-- Phases:
-  1.1: Domain model (new slice or extend existing)
-  1.2: Repository interface + implementation
-  1.3: Application handler
-  1.4: API endpoint
-  1.5: Integration with existing code
+Delivers: New capability working locally E2E
 
-Milestone 2: Feature Complete
-- Delivers: All feature requirements
-- Phases: [Additional vertical slices]
+Key Results:
+- KR-1: [Feature works end-to-end]
 
-Milestone 3: Deploy to AWS
-- Delivers: Feature live in production
-- Phases:
-  3.1: Terraform updates (if infra changes)
-  3.2: Deploy + verify
+Epics:
+| Epic | Task | Key Result |
+|------|------|------------|
+| E1 | Domain Model (new slice) | KR-1 |
+| E2 | Repository + Handler | KR-1 |
+| E3 | API Endpoint | KR-1 |
+| E4 | Integration with Existing | KR-1 |
+
+Milestone 2: Feature Complete + Deploy
+Delivers: All feature requirements live
+
+Key Results:
+- KR-1: [Feature deployed and verified]
 ```
 
 ### Refactor/Restructure
 
 ```
 Milestone 1: Safety Net
-- Delivers: Tests covering existing behavior
-- Phases:
-  1.1: Characterization tests for existing code
-  1.2: Identify boundaries and dependencies
+Delivers: Tests covering existing behavior
+
+Key Results:
+- KR-1: [Existing behavior fully covered by tests]
+
+Epics:
+| Epic | Task | Key Result |
+|------|------|------------|
+| E1 | Characterization Tests | KR-1 |
+| E2 | Identify Boundaries | — (enabling) |
 
 Milestone 2: Incremental Migration
-- Delivers: Code migrated to new structure
-- Phases:
-  2.1: New structure alongside old
-  2.2: Migrate slice by slice (one at a time)
-  2.3: Update consumers
-  2.4: Remove old code
+Delivers: Code migrated to new structure
 
-Milestone 3: Verification
-- Delivers: Confidence in refactor
-- Phases:
-  3.1: E2E tests pass
-  3.2: Performance validation
-  3.3: Deploy + monitor
+Key Results:
+- KR-1: [All slices migrated, tests pass]
+
+Epics:
+| Epic | Task | Key Result |
+|------|------|------------|
+| E3 | New Structure Alongside | — (enabling) |
+| E4 | Migrate Slice by Slice | KR-1 |
+| E5 | Remove Old Code | KR-1 |
 ```
 
 ### Integration with External System
 
 ```
 Milestone 1: Interface Definition
-- Delivers: Contract with external system
-- Phases:
-  1.1: Understand external API (research)
-  1.2: Define domain interface (abstraction)
-  1.3: Mock implementation for local dev
+Delivers: Contract with external system
 
-Milestone 2: Real Implementation
-- Delivers: Working integration locally
-- Phases:
-  2.1: Infrastructure client implementation
-  2.2: Error handling + retries
-  2.3: Local E2E with real calls (sandbox/test env)
+Key Results:
+- KR-1: [Mock integration works locally]
 
-Milestone 3: Production Integration
-- Delivers: Live integration
-- Phases:
-  3.1: Secrets setup
-  3.2: Deploy + verify
-  3.3: Monitoring for integration health
+Epics:
+| Epic | Task | Key Result |
+|------|------|------------|
+| E1 | Research External API | — (enabling) |
+| E2 | Domain Interface (abstraction) | KR-1 |
+| E3 | Mock Implementation | KR-1 |
+
+Milestone 2: Real Implementation + Deploy
+Delivers: Working integration live
+
+Key Results:
+- KR-1: [Real API calls succeed]
 ```
 
 ---
 
 ## Anti-Patterns to Avoid
 
-### Big Bang Phases
-**Bad**: "Phase 1: Implement entire domain model"
-**Good**: "Phase 1: Implement Order aggregate only"
+### Big Bang Epics
+**Bad**: "E1: Implement entire domain model"
+**Good**: "E1: Implement Order aggregate only"
 
-### Horizontal Layer Phases
-**Bad**: "Phase 1: All repositories, Phase 2: All handlers"
-**Good**: "Phase 1: Order slice (domain + repo + handler)"
+### Horizontal Layer Epics
+**Bad**: "E1: All repositories, E2: All handlers"
+**Good**: "E1: Order slice (domain + repo + handler)"
 
 ### Infrastructure Before Value
-**Bad**: "Phase 1: Set up Terraform and CI/CD"
-**Good**: "Phase 1: Core capability running locally"
+**Bad**: "E1: Set up Terraform and CI/CD"
+**Good**: "E1: Core capability running locally"
 
 ### Premature Cloud Deployment
-**Bad**: "Phase 3: Deploy to AWS" (before local E2E works)
+**Bad**: "E3: Deploy to AWS" (before local E2E works)
 **Good**: "Milestone 5: AWS Deployment" (after local is solid)
-
-### Skipping Local Verification
-**Bad**: Jump to cloud testing
-**Good**: Full E2E locally first, then cloud
 
 ---
 
-## Checklist Before Finalizing Phases
+## Checklist Before Finalizing
 
 - [ ] First milestone produces something runnable locally
-- [ ] Each phase is a vertical slice (not horizontal layer)
+- [ ] Each epic is a vertical slice (not horizontal layer)
 - [ ] Core value delivered before infrastructure concerns
 - [ ] Local deployment mimics cloud deployment
 - [ ] AWS deployment is a separate, later milestone
-- [ ] Phase sizes are 1-2 days (not weeks)
-- [ ] Milestone sizes are ~1 week (not months)
-- [ ] No capability parallelization in early phases
+- [ ] Every epic maps to a Key Result or is marked as enabling
+- [ ] Key Results are measurable and observable
+- [ ] Objective is clear and confirmed by user
