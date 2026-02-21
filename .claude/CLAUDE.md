@@ -4,15 +4,15 @@ This repo contains a self-contained SDLC automation framework for Claude Code. I
 
 ## Pipeline Overview
 
-The SDLC operates as a three-stage pipeline. Each stage must complete before the next begins.
+The SDLC operates as a four-stage pipeline. Each stage must complete before the next begins.
 
 ```
-/sagerstack:code-planning  -->  /sagerstack:planner  -->  /sagerstack:builder
-     (solo)                      (4-agent team)            (2-agent team)
+/sagerstack:code-planning  -->  /sagerstack:planner  -->  /sagerstack:builder  -->  /sagerstack:verify
+     (solo)                      (4-agent team)            (2-agent team)            (solo, interactive)
 
-Produces:                   Produces:                           Produces:
-docs/project-context.md     docs/phases/epic-{NNN}-{desc}/      src/ + tests/ (code)
-                              epic.md                            docs/phases/epic-{NNN}-{desc}/qa/
+Produces:                   Produces:                           Produces:                    Produces:
+docs/project-context.md     docs/phases/epic-{NNN}-{desc}/      src/ + tests/ (code)         docs/phases/epic-{NNN}-{desc}/qa/
+                              epic.md                            docs/phases/epic-{NNN}-{desc}/qa/  uat-report.md
                               stories/story-{NNN}-{desc}.md        story-{NNN}-{desc}-qa-report.md
                               plans/story-{NNN}-{desc}-plan.md
                               plans/story-{NNN}-{desc}-critical-analysis.md
@@ -46,7 +46,9 @@ Spawns a 4-agent team to plan ONE epic at a time from `docs/project-context.md`.
 
 **User Q&A checkpoints**: 3 mandatory points where user confirms before proceeding.
 
-**Invocation**: Run `/sagerstack:planner`, select an epic.
+**Flags**: `--skip-research` skips Researcher agent and Architect web research for straightforward epics.
+
+**Invocation**: Run `/sagerstack:planner`, select an epic. Use `/sagerstack:hotfix` for bug-fix epics.
 
 ### Stage 3: Building (`/sagerstack:builder`)
 
@@ -65,6 +67,17 @@ Spawns a 2-agent team to implement ONE epic from its planning artifacts.
 
 **Invocation**: Run `/sagerstack:builder`, select an epic to build.
 
+### Stage 4: Interactive UAT (`/sagerstack:verify`)
+
+Solo interactive session. Walks the user through acceptance criteria one at a time after the builder completes.
+
+- Presents each AC (Given/When/Then) individually, waits for pass/fail/skip
+- Infers severity from AC context (never asks user to rate)
+- Writes results incrementally to `uat-report.md` (supports resume)
+- Routes failures to `/sagerstack:builder` for remediation
+
+**Invocation**: Run `/sagerstack:verify`, select an epic or story to verify.
+
 ## File Structure
 
 ### Skills (`.claude/skills/`)
@@ -77,6 +90,7 @@ Spawns a 2-agent team to implement ONE epic from its planning artifacts.
 | `sagerstack-code-qa` | (preloaded by builder-qa) | QA validation methodology |
 | `sagerstack-software-engineering` | (preloaded by builder-developer) | Python architecture standards (Vertical Slice + DDD) |
 | `sagerstack-local-testing` | (preloaded by builder-developer) | Testing infrastructure, Docker, pytest |
+| `sagerstack-verify` | `/sagerstack:verify` | Interactive UAT verification, AC-driven |
 | `sagerstack-deploy-aws` | `/sagerstack:deploy-aws` | AWS Terraform deployment |
 | `project-memory` | (preloaded by multiple agents) | Cross-session knowledge in docs/project_notes/ |
 
@@ -98,6 +112,8 @@ Spawns a 2-agent team to implement ONE epic from its planning artifacts.
 | `code-planning.md` | `sagerstack-code-planning` |
 | `planner.md` | `sagerstack-planner` |
 | `builder.md` | `sagerstack-builder` |
+| `verify.md` | `sagerstack-verify` |
+| `hotfix.md` | `sagerstack-planner` (hotfix mode) |
 
 ## Artifact Locations
 
@@ -122,7 +138,8 @@ docs/
 │   │   │   └── story-002-{desc}-critical-analysis.md
 │   │   └── qa/
 │   │       ├── story-001-{desc}-qa-report.md  # QA validation report
-│   │       └── story-002-{desc}-qa-report.md
+│   │       ├── story-002-{desc}-qa-report.md
+│   │       └── uat-report.md                  # Interactive UAT results (from /sagerstack:verify)
 │   └── epic-002-{desc}/
 │       └── ...
 └── project_notes/                  # Project memory (cross-session)

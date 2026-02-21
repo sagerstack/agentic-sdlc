@@ -10,3 +10,11 @@ If user input specifies a phase number (e.g., "1.1", "phase 2.3"), plan that pha
 If user input is "next", plan the next unplanned phase.
 If user input is "manage", enter phase management mode (insert, remove, reorder, split, merge).
 If user input is empty, present the phase list and ask which phase to plan.
+
+**Flags:**
+- `--skip-research` — Skip the research phase and architect web research. Researcher agent is not spawned. Solution Architect works from codebase + project-context only, without WebSearch/WebFetch. Use for straightforward epics with well-understood requirements.
+
+Examples:
+- `/sagerstack:planner 001` — Plan epic 001 with full research
+- `/sagerstack:planner next --skip-research` — Plan next epic without research
+- `/sagerstack:planner manage` — Manage epic structure

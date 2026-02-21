@@ -501,9 +501,6 @@ All in `references/`:
 **Logging:**
 - developer-log.md -- Developer logging format adapted for single-agent model (6 sections, timestamp format, complete log structure)
 
-**Code Patterns:**
-- ddd-patterns.md -- DDD tactical pattern catalog (Value Objects, Entities, Aggregates, Repositories, Domain Events, Domain Services, Specifications, Factories)
-
 **Git Workflow:**
 - git-workflow.md -- Branch naming, commit conventions, PR creation, merge protocol
 
